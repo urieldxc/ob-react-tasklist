@@ -8,12 +8,14 @@ const TaskListComponent = () => {
 
     const defaultTask = new Task('Example', 'Default description', false, LEVELS.NORMAL)
     const [tasks, setTasks] = useState([defaultTask]);
+    const [loading, setLoading] = useState(true);
 
     const changeCompleted = (id) =>{
         console.log("TODO: Cambiar estado de una tarea")
     }
     useEffect(() => {
         console.log('Task state has been modified')
+        setLoading(false);
         return () => {
             console.log('Task list component is going to unmount')
         };
