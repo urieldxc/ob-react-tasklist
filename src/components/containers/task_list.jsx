@@ -3,16 +3,19 @@ import { LEVELS } from '../models/levels.enum';
 import { Task } from '../models/task.class';
 import TaskComponent from '../pure/task';
 import { useState, useEffect } from 'react';
+import TaskForm from '../pure/forms/taskForm';
 
 const TaskListComponent = () => {
 
-    const defaultTask = new Task('Example', 'Default description', false, LEVELS.NORMAL)
-    const [tasks, setTasks] = useState([defaultTask]);
+    const defaultTask1 = new Task('Example 1', 'Description 1', true, LEVELS.NORMAL)
+    const defaultTask2 = new Task('Example 2', 'Description 2', false, LEVELS.URGENT)
+    const defaultTask3 = new Task('Example 3', 'Description 3', false, LEVELS.BLOCKING)
+
+
+
+    const [tasks, setTasks] = useState([defaultTask1, defaultTask2, defaultTask3]);
     const [loading, setLoading] = useState(true);
 
-    const changeCompleted = (id) =>{
-        console.log("TODO: Cambiar estado de una tarea")
-    }
     useEffect(() => {
         console.log('Task state has been modified')
         setLoading(false);
@@ -20,6 +23,31 @@ const TaskListComponent = () => {
             console.log('Task list component is going to unmount')
         };
     }, [tasks]);
+
+    const completeTask = (task) =>{
+        console.log("Completed this task: ", task);
+        const index = tasks.indexOf(task);
+        const tempTasks = [...tasks];
+        tempTasks[index].completed = !tempTasks[index].completed;
+        // We update the state of the cmponent  with the new list and it will update the iteration
+        // of the tasks in order to show the updated task.
+        setTasks(tempTasks);
+
+    }
+    const deleteTask = (task) =>{
+        console.log("Deleted task:", task);
+        const index = tasks.indexOf(task);
+        const tempTasks = [...tasks];
+        tempTasks.splice(index, 1);
+        setTasks(tempTasks);
+    }
+    const addTask = (task) =>{
+        console.log("Added task:", task);
+        // const index = tasks.indexOf(task);
+        const tempTasks = [...tasks];
+        tempTasks.push(task);
+        setTasks(tempTasks);
+    }
 
     return (
         <div>
@@ -41,13 +69,13 @@ const TaskListComponent = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* TODO: Aplicar un For/Map para renderizar todas las tareas */}
-                                <TaskComponent task={defaultTask}/>
+                                {tasks.map((task, index) => <TaskComponent key={index} task={task} complete={completeTask} deleteTask={deleteTask}/>)}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            <TaskForm add={addTask}/>
         </div>
     );
 };
